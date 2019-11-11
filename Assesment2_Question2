@@ -1,0 +1,177 @@
+/* Amazon is opening new warehouse and your manager has tasked you with figuring out how to quickly get
+ * some of the inventory in the original warehouse to the new warehouse. You are given a list of the
+ * locations of all N packing crates in the facility, any of which is a candidate to be moved to the new
+ * facility. All crates are the same size, and truck has capacity to move exactly M of them. The delivery
+ * driver needs to leave  promptly, so it is your job to9 find the crates that are closest to the
+ * network. Crates are heavy so you can carry only one at a time
+ *
+ * Given an array of the locations of N packing crates, implement an algorithm to find the locations
+ * of the M crates closest to the truck.
+ *
+ * Input:
+ * The input to the function/method consists of three arguments:
+ * totalCrates an integer representing the total number of packing crates in the facility [N];
+ * listofCoordinates a list where each element consists of pair of integers representing x and y
+ * Coordinates of the packing crates
+ * truckCapacity, an integer representing the number of packing crates that will be moved to the new
+ * facility [M]
+ *
+ * Output: Return a list of Integers where each element of the list represents x and y coordinates of
+ * the packing crates that will be moved to the new facility
+ *
+ * Constraints : truckCapacity<=totalCrates
+ *
+ * Note: You begin at the truck location [0,0]
+ * The distance of the truck from the warehouse location [x,y] is the square root of x^2 + y^2
+ * If there are ties then return any of the locations as long as you satisfy returning M points
+ *
+ *  Example
+ *  Input :
+ *  totalCrates = 3
+ *  listofCoordinate = [[1,2],[3,4],[1,-1]
+ *  Truck Capacity = 2
+ *
+ *  Output = [[1,-1].[1,2]*/
+
+
+*****************Program Code**************************************************************
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+
+public class Inventory {
+
+	public static ArrayList<ArrayList<Integer>> getShortestPath(ArrayList<ArrayList<Integer>> listofCoordinates, int totalCrates,int truckCapacity) {
+		int sum=0;
+		ArrayList<Double> coordinatesSum = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> shortDistance = new ArrayList<ArrayList<Integer>>();
+		HashMap<ArrayList<Integer>, Double> hs = new HashMap<ArrayList<Integer>, Double>();
+		int count = 0;
+
+		for(int i = 0 ; i<listofCoordinates.size() ; i++)
+		{
+			ArrayList<Integer> temp = new ArrayList<>();
+			temp.addAll(listofCoordinates.get(i));
+			sum = (temp.get(0)*temp.get(0)) + (temp.get(1)*temp.get(1));
+			double squareRootsum = Math.sqrt(sum);
+			coordinatesSum.add(squareRootsum);
+		}
+
+		for(int i = 0 ; i<listofCoordinates.size() ; i++)
+		{
+			hs.put(listofCoordinates.get(i), coordinatesSum.get(i));
+		}
+
+
+		HashMap<ArrayList<Integer>, Double> hm1 = sortByValue(hs);
+
+		for(Map.Entry<ArrayList<Integer>, Double> entry : hm1.entrySet())
+		{
+			shortDistance.add(entry.getKey());
+			count++;
+			if(count == truckCapacity)
+			{
+				break;
+			}
+		}
+		return shortDistance;
+	}
+
+	public static HashMap<ArrayList<Integer>, Double> sortByValue(HashMap<ArrayList<Integer>, Double> hs)
+    {
+
+        List<Map.Entry<ArrayList<Integer>, Double>> list =
+               new LinkedList<Map.Entry<ArrayList<Integer>, Double> >(hs.entrySet());
+
+        //System.out.println("printed List"+list);
+
+        Collections.sort(list, new Comparator<Map.Entry<ArrayList<Integer>, Double> >() {
+            public int compare(Map.Entry<ArrayList<Integer>, Double> o1,
+                               Map.Entry<ArrayList<Integer>, Double> o2)
+            {
+            	//System.out.println(o1.toString() + "this is O1");
+            	//System.out.println(o2.toString() + "this is O2");
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+
+        HashMap<ArrayList<Integer>, Double> temp = new LinkedHashMap<ArrayList<Integer>, Double>();
+        for (Map.Entry<ArrayList<Integer>, Double> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		//Test Case 1:
+		ArrayList<ArrayList<Integer>> listOfCoorodinates = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> arr1 = new ArrayList<Integer>();
+		ArrayList<Integer> arr2 = new ArrayList<Integer>();
+		ArrayList<Integer> arr3 = new ArrayList<Integer>();
+		arr1.add(1);
+		arr1.add(2);
+		arr2.add(3);
+		arr2.add(4);
+		arr3.add(1);
+		arr3.add(-1);
+		listOfCoorodinates.add(arr1);
+		listOfCoorodinates.add(arr2);
+		listOfCoorodinates.add(arr3);
+		int totalCrates = 3;
+		int truckCapacity  = 2;
+
+		System.out.println(getShortestPath(listOfCoorodinates,totalCrates,truckCapacity));
+
+// Test Case 2
+/*		ArrayList<ArrayList<Integer>> listOfCoorodinates = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> arr1 = new ArrayList<Integer>();
+		ArrayList<Integer> arr2 = new ArrayList<Integer>();
+		ArrayList<Integer> arr3 = new ArrayList<Integer>();
+		ArrayList<Integer> arr4 = new ArrayList<Integer>();
+		ArrayList<Integer> arr5 = new ArrayList<Integer>();
+		ArrayList<Integer> arr6 = new ArrayList<Integer>();
+		arr1.add(3);
+		arr1.add(6);
+		arr2.add(2);
+		arr2.add(4);
+		arr3.add(5);
+		arr3.add(3);
+		arr4.add(2);
+		arr4.add(7);
+		arr5.add(1);
+		arr5.add(8);
+		arr6.add(7);
+		arr6.add(9);
+		listOfCoorodinates.add(arr1);
+		listOfCoorodinates.add(arr2);
+		listOfCoorodinates.add(arr3);
+		listOfCoorodinates.add(arr4);
+		listOfCoorodinates.add(arr5);
+		listOfCoorodinates.add(arr6);
+		int totalCrates = 6;
+		int truckCapacity  = 3;
+
+		System.out.println(getShortestPath(listOfCoorodinates,totalCrates,truckCapacity));
+		*/
+
+	}
+
+}
+
+
+***********Output******************
+Test Case 1
+[[1, -1], [1, 2]]
+
+Test Case 2
+[[2, 4], [5, 3], [3, 6]]
